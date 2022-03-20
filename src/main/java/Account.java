@@ -1,5 +1,3 @@
-import org.jetbrains.annotations.Nullable;
-
 import java.util.Date;
 public class Account {
     int account_id;
@@ -7,7 +5,6 @@ public class Account {
     double account_amount;
     String account_type;
     Date account_start_date = new Date();
-    @Nullable
     Date account_end_date = new Date();
     int account_percent;
     int client_id;

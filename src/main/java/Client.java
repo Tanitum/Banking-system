@@ -28,24 +28,11 @@ public class Client {
         return client_id+ ";"+person_id+ ";"+ bank_id+ ";"+client_start_date + ";"+client_status;
     }
 
-    public int  Transfer_money(int account_number_from, int account_number_to, double transfer_size) throws Exception {
-        throw new Exception("not emplemented yet");
-        //   return 5;
-    }
-
     public Person Get_person() throws Exception {
         return Storage.Get_person_by_id(person_id);
     }
     public Bank Get_bank() throws Exception {
         return Storage.Get_bank_by_id(bank_id);
-    }
-
-    public void  Get_cash(int account_number_from, double amount) throws Exception {
-        throw new Exception("not emplemented yet");
-    }
-
-    public void  Supplement_balance(int account_number_to, double amount) throws Exception {
-        throw new Exception("not emplemented yet");
     }
 
     public int  Create_account(String account_type) throws Exception {
@@ -59,11 +46,6 @@ public class Client {
 
     private void  Client_status_checker() throws Exception {
         throw new Exception("not emplemented yet");
-    }
-
-    private String  Cancel_transfer(int transfer_id) throws Exception {
-        throw new Exception("not emplemented yet");
-        //return "Completed";
     }
 
 }

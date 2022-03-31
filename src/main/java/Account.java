@@ -52,6 +52,24 @@ public class Account {
         //return "x";
     }
 
+    public int  Transfer_money(int account_number_to, double transfer_size) throws Exception {
+        throw new Exception("not emplemented yet");
+        //   return 5;
+    }
+
+    private String  Cancel_transfer(int transfer_id) throws Exception {
+        throw new Exception("not emplemented yet");
+        //return "Completed";
+    }
+
+    public void  Get_cash(double amount) throws Exception {
+        throw new Exception("not emplemented yet");
+    }
+
+    public void  Supplement_balance(double amount) throws Exception {
+        throw new Exception("not emplemented yet");
+    }
+
     public void Close_account() throws Exception {
         throw new Exception("not emplemented yet");
     }

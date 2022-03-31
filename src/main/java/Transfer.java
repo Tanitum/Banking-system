@@ -11,12 +11,12 @@ public class Transfer {
     Account account_to;
     double transfer_size;
 
-    public int  Transfer_money(int account_number_from, int account_number_to, double transfer_size) throws Exception {
+    public static int Transfer_money(int account_number_from, int account_number_to, double transfer_size) throws Exception {
         throw new Exception("not emplemented yet");
         //   return 5;
     }
 
-    protected Transfer_status  Cancel_transfer() throws Exception {
+    protected static Transfer_status  Cancel_transfer() throws Exception {
         throw new Exception("not emplemented yet");
        // return transfer_status;
     }

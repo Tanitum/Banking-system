@@ -13,6 +13,11 @@ public class Bank {
         this.bank_id=bank_id;
     }
 
+    protected Bank (String bank_name){
+        this.bank_id=0;
+        this.bank_name=bank_name;
+    }
+
     @Override
     public String toString(){
         return bank_id+ ";"+bank_name;

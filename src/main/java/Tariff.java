@@ -10,6 +10,7 @@ public class Tariff {
     {
         return tariff_id;
     }
+
     public int GetBank_id ()
     {
         return bank_id;
@@ -17,6 +18,15 @@ public class Tariff {
 
     protected Tariff (int tariff_id, int bank_id, int account_percent, double credit_limit, int credit_commission, double status_limit){
         this.tariff_id=tariff_id;
+        this.bank_id=bank_id;
+        this.account_percent=account_percent;
+        this.credit_limit=credit_limit;
+        this.credit_commission=credit_commission;
+        this.status_limit=status_limit;
+    }
+
+    protected Tariff (int bank_id, int account_percent, double credit_limit, int credit_commission, double status_limit){
+        this.tariff_id=0;
         this.bank_id=bank_id;
         this.account_percent=account_percent;
         this.credit_limit=credit_limit;

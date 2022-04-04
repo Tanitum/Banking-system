@@ -23,9 +23,16 @@ public class Client {
         this.client_start_date=client_start_date;
     }
 
+    protected Client (int person_id, int bank_id, Date client_start_date){
+        this.client_id=0;
+        this.person_id=person_id;
+        this.bank_id=bank_id;
+        this.client_start_date=client_start_date;
+    }
+
     @Override
     public String toString(){
-        return client_id+ ";"+person_id+ ";"+ bank_id+ ";"+client_start_date + ";"+client_status;
+        return client_id+ ";"+person_id+ ";"+ bank_id+ ";"+Storage.formater.format(client_start_date) + ";"+client_status;
     }
 
     public Person Get_person() throws Exception {

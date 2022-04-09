@@ -60,13 +60,22 @@ public class Bank {
     }
 
     public int Add_tariff(Tariff tariff) throws Exception {
-        throw new Exception("not emplemented yet");
-        //  return 7;
+        if (tariff.GetBank_id()==bank_id){
+            return Storage.Save(tariff);
+        }else {
+            throw new Exception("Вы пытаетесь сохранить тариф какого-то другого банка (id которого отличается от выбранного).");
+        }
     }
 
     public int Add_client(Person person) throws Exception {
-        throw new Exception("not emplemented yet");
-        //  return 6;
+        List<Client> Clients =Storage.Find_all_clients();
+        for (Client item : Clients)
+        {
+            if (item.person_id==person.GetPerson_id() && item.bank_id==bank_id){
+                throw new Exception("Вы пытаетесь сделать человека клиентом банка, клиентом которого он уже является. Клиентский id этого человека в этом банке: " +item.client_id);
+            }
+        }
+        return Storage.Save(new Client(person.GetPerson_id(), bank_id, Storage.formater.parse(Current_date.Get_current_date())));
     }
 
 }

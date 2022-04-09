@@ -2,32 +2,34 @@ import java.io.FileNotFoundException;
 import java.util.Date;
 public class Client {
     int client_id;
+    int person_id;
+    int bank_id;
     Date client_start_date = new Date();
     enum Client_status{
         Unreliable,
         Unlimited
     }
     Client_status client_status;
-    int person_id;
-    int bank_id;
 
     public int GetClient_id ()
     {
         return client_id;
     }
 
-    protected Client (int client_id, int person_id, int bank_id, Date client_start_date){
+    protected Client (int client_id, int person_id, int bank_id, Date client_start_date) throws Exception {
         this.client_id=client_id;
         this.person_id=person_id;
         this.bank_id=bank_id;
         this.client_start_date=client_start_date;
+        this.Client_status_checker();
     }
 
-    protected Client (int person_id, int bank_id, Date client_start_date){
+    protected Client (int person_id, int bank_id, Date client_start_date) throws Exception {
         this.client_id=0;
         this.person_id=person_id;
         this.bank_id=bank_id;
         this.client_start_date=client_start_date;
+        this.Client_status_checker();
     }
 
     @Override
@@ -52,7 +54,11 @@ public class Client {
     }
 
     private void  Client_status_checker() throws Exception {
-        throw new Exception("not emplemented yet");
+        if (this.Get_person().person_address.equals("-") || this.Get_person().person_passport.equals("-")){
+            this.client_status=Client_status.Unreliable;
+        }else{
+            this.client_status=Client_status.Unlimited;
+        }
     }
 
 }

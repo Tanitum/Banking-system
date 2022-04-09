@@ -448,4 +448,68 @@ public class Storage{
         }
         return Account_type_list;
     }
+
+    public static Transfer Get_transfer_by_id(Integer transfer_id) throws Exception {
+        List<String[]> list = Read_file("Transfer");
+        for (String[] item : list)
+        {
+            if (transfer_id.toString().equals(item[0])){
+                return new Transfer(Integer.valueOf(item[0]),Integer.valueOf(item[1]),item[2],Integer.valueOf(item[3]),Integer.valueOf(item[4]),Double.valueOf(item[5]),formater.parse(item[6]));
+            }
+        }
+        return null;
+    }
+
+    public static List<Transfer> Find_all_transfers() throws Exception {
+        List<String[]> list = Read_file("Transfer");
+        List<Transfer> Transfer_list = new ArrayList<Transfer>();
+        for (String[] item : list)
+        {
+            Transfer_list.add(new Transfer(Integer.valueOf(item[0]),Integer.valueOf(item[1]),item[2],Integer.valueOf(item[3]),Integer.valueOf(item[4]),Double.valueOf(item[5]),formater.parse(item[6])));
+        }
+        return Transfer_list;
+    }
+
+    public static int Save(Transfer transfer) throws Exception {
+        List<Transfer> Transfer_list = Storage.Find_all_transfers();
+        int transfer_id=transfer.GetTransfer_id();
+        FileWriter Fw = new FileWriter(Transfer_file_name);
+        if (transfer_id==0)
+        {
+            int max_id=-2;
+            for (Transfer item : Transfer_list)
+            {
+                if (item.GetTransfer_id()>max_id){
+                    max_id=item.GetTransfer_id();
+                }
+                Fw.write(item.GetTransfer_id()+";"+item.GetOriginalTransfer_id()+";"+item.transfer_status+";"+item.account_from.GetAccount_id()+";"+item.account_to.GetAccount_id()+";"+item.transfer_size+";"+formater.format(item.transfer_date));
+                Fw.append('\n');
+            }
+            transfer_id=max_id+1;
+            Transfer_list.add(new Transfer(transfer_id,transfer.GetOriginalTransfer_id(),transfer.GetTransfer_status().toString(),transfer.account_from.GetAccount_id(),transfer.account_to.GetAccount_id(),transfer.transfer_size,transfer.transfer_date));
+            Fw.write(transfer_id+";"+transfer.GetOriginalTransfer_id()+";"+transfer.transfer_status+";"+transfer.account_from.GetAccount_id()+";"+transfer.account_to.GetAccount_id()+";"+transfer.transfer_size+";"+formater.format(transfer.transfer_date));
+            Fw.append('\n');
+        }
+        else{
+            int index=0;
+            boolean is_not_found=true;
+            for (Transfer item : Transfer_list)
+            {
+                if (item.GetTransfer_id()==transfer_id){
+                    is_not_found=false;
+                    Transfer_list.set(index,transfer);
+                }
+                Fw.write(Transfer_list.get(index).GetTransfer_id()+";"+Transfer_list.get(index).GetOriginalTransfer_id()+";"+Transfer_list.get(index).GetTransfer_status().toString()+";"+Transfer_list.get(index).account_from.GetAccount_id()+";"+Transfer_list.get(index).account_to.GetAccount_id()+";"+Transfer_list.get(index).transfer_size+";"+formater.format(Transfer_list.get(index).transfer_date));
+                Fw.append('\n');
+                index+=1;
+            }
+            if (is_not_found){
+                Fw.close();
+                throw new Exception("Вы пытаетесь поменять данные несуществующего трансфера");
+            }
+        }
+        Fw.close();
+        return transfer_id;
+    }
+
 }

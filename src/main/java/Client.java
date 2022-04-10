@@ -66,7 +66,7 @@ public class Client {
         }else if (account_type.equals("debit") || account_type.equals("Debit")){
             end_date=Storage.formater.parse("31.12.9999");
             account_type_id=2;
-        }else {  //deposit
+        }else if (account_type.equals("deposit") || account_type.equals("Deposit")){
             end_date=Storage.formater.parse(Current_date.Get_current_date());
             //31536000000 миллисекунд в году
             //по умолчанию депозит будет закрыт через 1 год
@@ -74,6 +74,9 @@ public class Client {
             deposit_time+=31536000000L;
             end_date.setTime(deposit_time);
             account_type_id=3;
+        }
+        else {
+            throw new Exception("вы ввели некорректный тип счёта");
         }
         //по умолчанию берется первый найденный тариф в банке, в котором создан данный клиент.
         return Storage.Save(new Account(client_id, Bank_tariffs.get(0).GetTariff_id(), account_type_id,account_number,0,Storage.formater.parse(Current_date.Get_current_date()),end_date));

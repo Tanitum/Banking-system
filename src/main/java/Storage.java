@@ -273,12 +273,12 @@ public class Storage{
         return bank_id;
     }
 
-    public static List<Account> Find(Integer client_id, String account_type) throws Exception { // пока не добавлена проверка типа счёта
+    public static List<Account> Find_client_accounts(Integer client_id) throws Exception {
         List<Account> list = Find_all_accounts();
         List<Account> Account_list = new ArrayList<Account>();
         for (Account item : list)
         {
-            if (item.Get_client().client_id==client_id /*  && item.Get_account_type().account_type.equals(account_type)*/){
+            if (item.Get_client().client_id==client_id){
                 Account_list.add(item);
             }
         }

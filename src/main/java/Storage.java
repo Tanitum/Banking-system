@@ -57,7 +57,7 @@ public class Storage{
                 return new Person(Integer.valueOf(item[0]),item[1],item[2],item[3],item[4]);
             }
         }
-        return null;
+        throw new Exception("Вы пытаетесь найти несуществующего человека.");
     }
 
     public static List<Person> Find_all_persons() throws Exception {
@@ -78,7 +78,7 @@ public class Storage{
                 return new Person(Integer.valueOf(item[0]),item[1],item[2],item[3],item[4]);
             }
         }
-        return null;
+        throw new Exception("Вы пытаетесь найти несуществующего человека.");
     }
 
     public static int Save(Person person) throws Exception {
@@ -116,7 +116,7 @@ public class Storage{
             }
             if (is_not_found){
                 Fw.close();
-                throw new Exception("Вы пытаетесь поменять данные несуществующего человека");
+                throw new Exception("Вы пытаетесь поменять данные несуществующего человека.");
             }
         }
         Fw.close();
@@ -133,7 +133,7 @@ public class Storage{
                 return item;
             }
         }
-        return null;
+        throw new Exception("Вы пытаетесь найти несуществующего клиента.");
     }
 
     public static List<Client> Find_all_clients() throws Exception {
@@ -154,7 +154,7 @@ public class Storage{
                 return new Client(Integer.valueOf(item[0]),Integer.valueOf(item[1]),Integer.valueOf(item[2]),formater.parse(item[3]));
             }
         }
-        return null;
+        throw new Exception("Вы пытаетесь найти несуществующего клиента.");
     }
 
     public static int Save(Client client) throws Exception {
@@ -192,7 +192,7 @@ public class Storage{
             }
             if (is_not_found){
                 Fw.close();
-                throw new Exception("Вы пытаетесь поменять данные несуществующего клиента");
+                throw new Exception("Вы пытаетесь поменять данные несуществующего клиента.");
             }
         }
         Fw.close();
@@ -207,7 +207,7 @@ public class Storage{
                 return new Bank(Integer.valueOf(item[0]),item[1]);
             }
         }
-        return null;
+        throw new Exception("Вы пытаетесь найти несуществующий банк.");
     }
 
     public static List<Bank> Find_all_banks() throws Exception {
@@ -228,7 +228,7 @@ public class Storage{
                 return new Bank(Integer.valueOf(item[0]),item[1]);
             }
         }
-        return null;
+        throw new Exception("Вы пытаетесь найти несуществующий банк.");
     }
 
     public static int Save(Bank bank) throws Exception {
@@ -266,7 +266,7 @@ public class Storage{
             }
             if (is_not_found){
                 Fw.close();
-                throw new Exception("Вы пытаетесь поменять название у несуществующего банка");
+                throw new Exception("Вы пытаетесь поменять название у несуществующего банка.");
             }
         }
         Fw.close();
@@ -293,7 +293,7 @@ public class Storage{
                 return new Account(Integer.valueOf(item[0]),Integer.valueOf(item[1]),Integer.valueOf(item[2]),Integer.valueOf(item[3]),Integer.valueOf(item[4]),Double.valueOf(item[5]),formater.parse(item[6]),formater.parse(item[7]));
             }
         }
-        return null;
+        throw new Exception("Вы пытаетесь найти несуществующий счёт.");
     }
 
     public static List<Account> Find_all_accounts() throws Exception {
@@ -314,7 +314,7 @@ public class Storage{
                 return new Account(Integer.valueOf(item[0]),Integer.valueOf(item[1]),Integer.valueOf(item[2]),Integer.valueOf(item[3]),Integer.valueOf(item[4]),Double.valueOf(item[5]),formater.parse(item[6]),formater.parse(item[7]));
             }
         }
-        return null;
+        throw new Exception("Вы пытаетесь найти несуществующий счёт.");
     }
 
     public static int Save(Account account) throws Exception {
@@ -352,7 +352,7 @@ public class Storage{
             }
             if (is_not_found){
                 Fw.close();
-                throw new Exception("Вы пытаетесь поменять данные несуществующего счёта");
+                throw new Exception("Вы пытаетесь поменять данные несуществующего счёта.");
             }
         }
         Fw.close();
@@ -377,7 +377,7 @@ public class Storage{
                 return new Tariff(Integer.valueOf(item[0]),Integer.valueOf(item[1]),Integer.valueOf(item[2]),Double.valueOf(item[3]),Integer.valueOf(item[4]),Double.valueOf(item[5]));
             }
         }
-        return null;
+        throw new Exception("Вы пытаетесь найти несуществующий тариф.");
     }
 
     public static int Save(Tariff tariff) throws Exception {
@@ -415,7 +415,7 @@ public class Storage{
             }
             if (is_not_found){
                 Fw.close();
-                throw new Exception("Вы пытаетесь поменять условия несуществующего тарифа");
+                throw new Exception("Вы пытаетесь поменять условия несуществующего тарифа.");
             }
         }
         Fw.close();
@@ -436,7 +436,7 @@ public class Storage{
                 }
             }
         }
-        return null;
+        throw new Exception("Вы пытаетесь найти несуществующий тип счёта.");
     }
 
     public static List<String> Find_all_account_types() throws Exception {
@@ -457,7 +457,7 @@ public class Storage{
                 return new Transfer(Integer.valueOf(item[0]),Integer.valueOf(item[1]),item[2],Integer.valueOf(item[3]),Integer.valueOf(item[4]),Double.valueOf(item[5]),formater.parse(item[6]));
             }
         }
-        return null;
+        throw new Exception("Вы пытаетесь найти несуществующий трансфер.");
     }
 
     public static List<Transfer> Find_all_transfers() throws Exception {
@@ -505,7 +505,7 @@ public class Storage{
             }
             if (is_not_found){
                 Fw.close();
-                throw new Exception("Вы пытаетесь поменять данные несуществующего трансфера");
+                throw new Exception("Вы пытаетесь поменять данные несуществующего трансфера.");
             }
         }
         Fw.close();

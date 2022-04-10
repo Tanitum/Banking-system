@@ -1,15 +1,15 @@
 import java.util.Date;
 public class Account {
     int account_id;
-    int account_number;
-    double account_amount;
-    String account_type;
-    Date account_start_date = new Date();
-    Date account_end_date = new Date();
-    int account_percent;
     int client_id;
     int tariff_id;
     int account_type_id;
+    int account_number;
+    double account_amount;
+    Date account_start_date = new Date();
+    Date account_end_date = new Date();
+    String account_type;
+    int account_percent;
 
     public int GetAccount_id () {
         return account_id;
@@ -24,6 +24,13 @@ public class Account {
         this.account_amount=account_amount;
         this.account_start_date=account_start_date;
         this.account_end_date=account_end_date;
+        if (account_type_id==1){
+            this.account_type="credit";
+        }else if (account_type_id==2){
+            this.account_type="debit";
+        }else if (account_type_id==3){
+            this.account_type="deposit";
+        }
     }
 
     protected Account (int client_id, int tariff_id, int account_type_id, int account_number,double account_amount,Date account_start_date,Date account_end_date){
@@ -35,6 +42,17 @@ public class Account {
         this.account_amount=account_amount;
         this.account_start_date=account_start_date;
         this.account_end_date=account_end_date;
+        if (account_type_id==1){
+            this.account_type="credit";
+        }else if (account_type_id==2){
+            this.account_type="debit";
+        }else if (account_type_id==2){
+            this.account_type="deposit";
+        }
+    }
+
+    protected Account (){
+        this.account_id=0;
     }
 
     @Override
@@ -55,8 +73,12 @@ public class Account {
     }
 
     public double Get_balance(Date date) throws Exception {
-        throw new Exception("not emplemented yet");
-        //return 2;
+        if (Storage.formater.format(date).equals(Current_date.Get_current_date())){
+            return this.account_amount;
+        }
+        else{
+            throw new Exception("not emplemented yet");
+        }
     }
 
     public String Calculate_percent(Date date) throws Exception {
@@ -64,22 +86,16 @@ public class Account {
         //return "x";
     }
 
-    public int  Transfer_money(int account_number_to, double transfer_size) throws Exception {
-        throw new Exception("not emplemented yet");
-        //   return 5;
+    public int Transfer_money(int account_number_to, double transfer_size) throws Exception {
+        return Transfer.Transfer_money(this.account_number,account_number_to,transfer_size);
     }
 
-    private String  Cancel_transfer(int transfer_id) throws Exception {
-        throw new Exception("not emplemented yet");
-        //return "Completed";
+    public void Get_cash(double amount) throws Exception {
+        Transfer.Transfer_money(this.account_number,11111111,amount);
     }
 
-    public void  Get_cash(double amount) throws Exception {
-        throw new Exception("not emplemented yet");
-    }
-
-    public void  Supplement_balance(double amount) throws Exception {
-        throw new Exception("not emplemented yet");
+    public void Supplement_balance(double amount) throws Exception {
+        Transfer.Transfer_money(11111111,this.account_number,amount);
     }
 
     public void Close_account() throws Exception {

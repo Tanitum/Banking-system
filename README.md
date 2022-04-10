@@ -56,8 +56,8 @@ id тарифа (int tariff_id) (важно! тариф и клиент прив
 Должны храниться строчки вида: id трансфера (int transfer_id), id трансфера, к которому данный трансфер является обратным (int original_transfer_id), статус трансфера (string transfer_status),
 id счёта, с которого пересылаются деньги (int account_from_id), id счёта, на который пересылаются деньги (int account_to_id), размер перевода (double transfer_status), дата создания трансфера (Date transfer_date).
 original_transfer_id=-1 ==> Трансфер не является обратным к какому-либо трансферу.
-account_from_id=-1 ==> Деньги переводятся из аккаунта с бесконечными деньгами (кладем деньги в банкомате, происходит начисление процентов).
-account_to_id=-1 ==> Деньги переводятся на аккаунт с бесконечными деньгами (забираем деньги в банкомате).
+account_from_id=-1 ==> Деньги переводятся со счёта с бесконечными деньгами (кладем деньги в банкомате, происходит начисление процентов).
+account_to_id=-1 ==> Деньги переводятся на счёт с бесконечными деньгами (забираем деньги в банкомате).
 
 
 Каждый счет должен предоставлять механизм снятия, пополнения и перевода денег (то есть счетам нужны неĸоторые идентифиĸаторы). 
@@ -103,3 +103,17 @@ Save может добавлять новый объект в хранилище
 10) Добавлен и реализован метод Get_transfer_by_id(transfer_id):Transfer в классе Storage. Метод добавлен в UML диаграмму.
 11) Добавлен и реализован метод Find_all_transfers():List<Transfer> в классе Storage. Метод добавлен в UML диаграмму.
 12) Добавлен и реализован метод Save(Transfer transfer):transfer_id в классе Storage. Метод добавлен в UML диаграмму.
+
+Версия 5:
+1) Реализован метод Create_account(string account_type, int account_number):account_id в классе Client.
+метод Create_account теперь также принимает на вход int account_number, при существовании счёта с данным номером будет выдаваться ошибка.
+Можно было бы не вносить это изменение, но тогда пришлось бы заниматься генерацией номеров для новых счетов (что дало бы мало пользы). Изменение отражено на UML диаграмме.
+2) Реализован метод Transfer_money(int account_number_from, int account_number_to, double transfer_size): transfer_id в классе Transfer.
+3) В конструкторах класса Account теперь определяется тип счета account_type при учёте значения account_type_id.
+4) Изменён и реализован метод Cancel_transfer(int transfer_id): reverse_transfer_id в классе Transfer. Изменение отражено на UML диаграмме.
+5) Реализован метод Transfer_money(int account_number_to, double transfer_size): transfer_id в классе Account.
+6) Реализован метод Get_cash(double amount) в классе Account.
+7) Реализован метод Supplement_balance(double amount) в классе Account.
+8) Удалён метод Cancel_transfer(transfer_id) в классе Account. Изменение отражено на UML диаграмме.
+9) В методах Find... и Get_..._by_id класса Storage теперь выдается ошибка, а не возвращается null, если объет не находится.
+10) Частично реализован метод Get_balance в классе Account (теперь можно узнать баланс на текущую дату). 

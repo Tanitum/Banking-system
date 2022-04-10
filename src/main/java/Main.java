@@ -85,10 +85,30 @@ public class Main {
         //System.out.println(Storage.Get_person_by_id(4).toString()); // данные человека с id=4 поменялись
         //System.out.println(Storage.Get_client_by_id(1)); //клиент был Unreliable, стал Unlimited
 
-        System.out.println(Storage.Save(new Transfer(2,3,60000))); //создаем новый трансфер,но не проводим его
-        System.out.println(Storage.Save(new Transfer(1,-1,"Completed",4,5,1100,Storage.formater.parse("01.03.2020")))); //меняем трансфер по его id, не проводим не каких вычислений
-        System.out.println(Storage.Save(new Transfer(1000,2,3,60000))); //меняем трансфер, id которого не существует. Будет выдаваться Exception
-        System.out.println(Storage.Find_all_transfers());
+        //System.out.println(Storage.Save(new Transfer(2,3,60000))); //создаем новый трансфер,но не проводим его
+        //System.out.println(Storage.Save(new Transfer(1,-1,"Completed",4,5,1100,Storage.formater.parse("01.03.2020")))); //меняем трансфер по его id, не проводим не каких вычислений
+        //System.out.println(Storage.Save(new Transfer(1000,2,3,60000))); //меняем трансфер, id которого не существует. Будет выдаваться Exception
+        //System.out.println(Storage.Find_all_transfers());
+
+        //System.out.println(Storage.Get_client_by_id(2).Create_account("deposit",6));
+        //System.out.println(Storage.Get_client_by_id(2).Create_account("credit",7));
+        //Storage.Get_client_by_id(2).Create_account("debit",5); //ошибка (у этого клиента уже есть такой счёт)
+
+        //System.out.println(Transfer.Transfer_money(11111111,23548341,1100)); //Успешный перевод
+        //System.out.println(Transfer.Transfer_money(12891530,23548341,120000)); //На дебетовом счёте не хватает денег для перевода
+        //System.out.println(Transfer.Transfer_money(94815200,23548341,15001.0)); //На депозитном счёте не хватает денег для перевода
+        //System.out.println(Transfer.Transfer_money(35987614,23548341,200000)); // перевод отменится из-за статуса
+
+        //System.out.println(Transfer.Transfer_money(23548341,94815200,200));
+        //System.out.println(Transfer.Cancel_transfer(5));
+        // System.out.println(Transfer.Cancel_transfer(100)); //нет трансфреа с таким id, будет ошибка
+
+        //System.out.println(Storage.Get_account_by_id(1).Transfer_money(12891530,500));
+        //Storage.Get_account_by_id(1).Supplement_balance(700);
+        //Storage.Get_account_by_id(2).Get_cash(500);
+
+        //System.out.println(Storage.Get_account_by_id(1).Get_balance(Storage.formater.parse("10.04.2022"))); //10.04.2022 возвращался баланс на счёте с id=1
+        //System.out.println(Storage.Get_account_by_id(1).Get_balance(Storage.formater.parse("22.02.2021"))); // not emplemented yet
 
      //   private void Skip_period(Date date) throws Exception {
     //        throw new Exception("not emplemented yet");

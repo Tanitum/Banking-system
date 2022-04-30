@@ -7,54 +7,52 @@ public class Person {
     String person_address;
     String person_passport;
 
-    public int GetPerson_id ()
-    {
+    public int GetPerson_id() {
         return person_id;
     }
 
-    public Person (String person_name, String person_surname){
-        this.person_id=0;
-        this.person_name=person_name;
-        this.person_surname=person_surname;
+    public Person(String person_name, String person_surname) {
+        this.person_id = 0;
+        this.person_name = person_name;
+        this.person_surname = person_surname;
     }
 
-    protected Person (int person_id, String person_name, String person_surname){
-        this ( person_id, person_name,  person_surname, "-",  "-");
+    protected Person(int person_id, String person_name, String person_surname) {
+        this(person_id, person_name, person_surname, "-", "-");
     }
 
-    protected Person (int person_id, String person_name, String person_surname,String person_address, String person_passport){
-        this.person_name=person_name;
-        this.person_surname=person_surname;
-        this.person_id=person_id;
-        this.person_address=person_address;
-        this.person_passport=person_passport;
+    protected Person(int person_id, String person_name, String person_surname, String person_address, String person_passport) {
+        this.person_name = person_name;
+        this.person_surname = person_surname;
+        this.person_id = person_id;
+        this.person_address = person_address;
+        this.person_passport = person_passport;
     }
 
-    protected Person (String person_name, String person_surname,String person_address, String person_passport){
-        this.person_name=person_name;
-        this.person_surname=person_surname;
-        this.person_id=0;
-        this.person_address=person_address;
-        this.person_passport=person_passport;
+    protected Person(String person_name, String person_surname, String person_address, String person_passport) {
+        this.person_name = person_name;
+        this.person_surname = person_surname;
+        this.person_id = 0;
+        this.person_address = person_address;
+        this.person_passport = person_passport;
     }
 
     @Override
-    public String toString(){
-        return person_id+ ";"+person_name+ ";"+ person_surname+ ";"+person_address+ ";"+ person_passport;
+    public String toString() {
+        return person_id + ";" + person_name + ";" + person_surname + ";" + person_address + ";" + person_passport;
     }
 
-    public void  Change_person_info(String person_address, String person_passport) throws Exception {
-        this.person_address=person_address;
-        this.person_passport=person_passport;
-        Storage.Save(new Person(person_id, person_name, person_surname,person_address,person_passport));
+    public void Change_person_info(String person_address, String person_passport) throws Exception {
+        this.person_address = person_address;
+        this.person_passport = person_passport;
+        Storage.Save(new Person(person_id, person_name, person_surname, person_address, person_passport));
     }
 
     public int Create_client(int bank_id) throws Exception {
-        List<Client> Clients =Storage.Find_all_clients();
-        for (Client item : Clients)
-        {
-            if (item.person_id==person_id && item.bank_id==bank_id){
-                throw new Exception("Вы пытаетесь сделать человека клиентом банка, клиентом которого он уже является. Клиентский id этого человека в этом банке: " +item.client_id);
+        List<Client> Clients = Storage.Find_all_clients();
+        for (Client item : Clients) {
+            if (item.person_id == person_id && item.bank_id == bank_id) {
+                throw new Exception("Вы пытаетесь сделать человека клиентом банка, клиентом которого он уже является. Клиентский id этого человека в этом банке: " + item.client_id);
             }
         }
         return Storage.Save(new Client(person_id, bank_id, Storage.formater.parse(Current_date.Get_current_date())));

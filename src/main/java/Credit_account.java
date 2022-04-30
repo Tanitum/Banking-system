@@ -1,6 +1,6 @@
 import java.util.Date;
 
-public class Credit_account extends Account{
+public class Credit_account extends Account {
     int credit_commission;
     double credit_limit;
 

@@ -1,6 +1,6 @@
 import java.util.Date;
 
-public class Debit_account extends Account{
+public class Debit_account extends Account {
 
 
     protected Debit_account(int account_id, int client_id, int tariff_id, int account_type_id, int account_number, double account_amount, Date account_start_date, Date account_end_date) {

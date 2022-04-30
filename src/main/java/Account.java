@@ -35,21 +35,7 @@ public class Account {
     }
 
     protected Account(int client_id, int tariff_id, int account_type_id, int account_number, double account_amount, Date account_start_date, Date account_end_date) {
-        this.account_id = 0;
-        this.client_id = client_id;
-        this.tariff_id = tariff_id;
-        this.account_type_id = account_type_id;
-        this.account_number = account_number;
-        this.account_amount = account_amount;
-        this.account_start_date = account_start_date;
-        this.account_end_date = account_end_date;
-        if (account_type_id == 1) {
-            this.account_type = "credit";
-        } else if (account_type_id == 2) {
-            this.account_type = "debit";
-        } else if (account_type_id == 2) {
-            this.account_type = "deposit";
-        }
+        this(0, client_id, tariff_id, account_type_id, account_number, account_amount, account_start_date, account_end_date);
     }
 
     protected Account() {

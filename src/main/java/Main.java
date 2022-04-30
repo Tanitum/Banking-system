@@ -8,7 +8,7 @@ public class Main {
         System.out.println("Введите ваше имя.");
         String user_name = scan.nextLine();
         if (user_name.equals("Admin")) {
-            throw new Exception("Вы не являетесь администратором");
+            throw new SecurityException("Вы не являетесь администратором");
         }
         System.out.println("Введите вашу фамилию.");
         String user_surname = scan.nextLine();
@@ -30,7 +30,7 @@ public class Main {
             Storage.Save(user_person);
             user_person = Storage.Find(user_name, user_surname);
         } else {
-            throw new Exception("Вы ввели не [да/нет].");
+            throw new IllegalArgumentException("Вы ввели не [да/нет].");
         }
         System.out.println("Вот ваши данные: " + user_person);
 
@@ -43,7 +43,7 @@ public class Main {
         System.out.println("Введите название банка, клиентом которого вы являетесь/хотите стать.");
         String user_bank_name = scan.nextLine();
         if (user_bank_name.equals("Adminbank")) {
-            throw new Exception("Вы не являетесь администратором");
+            throw new SecurityException("Вы не являетесь администратором");
         }
         Bank user_bank = Storage.Find(user_bank_name);
         System.out.println("Вот ваш выбранный банк: " + user_bank);
@@ -58,7 +58,7 @@ public class Main {
             user_client = Storage.Find(user_name, user_surname, user_bank_name);
             System.out.println("Вы стали клиентом этого банка");
         } else {
-            throw new Exception("Вы ввели не [да/нет].");
+            throw new IllegalArgumentException("Вы ввели не [да/нет].");
         }
         System.out.println("Вот данные вашего клиентского аккаунта: " + user_client);
 

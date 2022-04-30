@@ -1,3 +1,5 @@
+import Exceptions.ObjectAlreadyExistsException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,8 +17,7 @@ public class Bank {
     }
 
     protected Bank(String bank_name) {
-        this.bank_id = 0;
-        this.bank_name = bank_name;
+        this(0, bank_name);
     }
 
     @Override
@@ -61,7 +62,7 @@ public class Bank {
         if (tariff.GetBank_id() == bank_id) {
             return Storage.Save(tariff);
         } else {
-            throw new Exception("Вы пытаетесь сохранить тариф какого-то другого банка (id которого отличается от выбранного).");
+            throw new IllegalArgumentException("Вы пытаетесь сохранить тариф какого-то другого банка (id которого отличается от выбранного).");
         }
     }
 
@@ -69,7 +70,7 @@ public class Bank {
         List<Client> Clients = Storage.Find_all_clients();
         for (Client item : Clients) {
             if (item.person_id == person.GetPerson_id() && item.bank_id == bank_id) {
-                throw new Exception("Вы пытаетесь сделать человека клиентом банка, клиентом которого он уже является. Клиентский id этого человека в этом банке: " + item.client_id);
+                throw new ObjectAlreadyExistsException("Вы пытаетесь сделать человека клиентом банка, клиентом которого он уже является. Клиентский id этого человека в этом банке: " + item.client_id);
             }
         }
         return Storage.Save(new Client(person.GetPerson_id(), bank_id, Storage.formater.parse(Current_date.Get_current_date())));

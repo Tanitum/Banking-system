@@ -30,16 +30,6 @@ public class Transfer {
         return transfer_status;
     }
 
-    protected Transfer(int transfer_id, int account_from_id, int account_to_id, double transfer_size) throws Exception {
-        this.transfer_id = transfer_id;
-        this.original_transfer_id = -1;
-        this.transfer_status = Transfer_status.Completed;
-        this.account_from = Storage.Get_account_by_id(account_from_id);
-        this.account_to = Storage.Get_account_by_id(account_to_id);
-        this.transfer_size = transfer_size;
-        this.transfer_date = Storage.formater.parse(Current_date.Get_current_date());
-    }
-
     protected Transfer(int transfer_id, int original_transfer_id, String transfer_status, int account_from_id, int account_to_id, double transfer_size, Date transfer_date) throws Exception {
         this.transfer_id = transfer_id;
         this.original_transfer_id = original_transfer_id;
@@ -50,14 +40,12 @@ public class Transfer {
         this.transfer_date = transfer_date;
     }
 
+    protected Transfer(int transfer_id, int account_from_id, int account_to_id, double transfer_size) throws Exception {
+        this(transfer_id, -1, Transfer_status.Completed.toString(), account_from_id, account_to_id, transfer_size, Storage.formater.parse(Current_date.Get_current_date()));
+    }
+
     protected Transfer(int account_from_id, int account_to_id, double transfer_size) throws Exception {
-        this.transfer_id = 0;
-        this.original_transfer_id = -1;
-        this.transfer_status = Transfer_status.Completed;
-        this.account_from = Storage.Get_account_by_id(account_from_id);
-        this.account_to = Storage.Get_account_by_id(account_to_id);
-        this.transfer_size = transfer_size;
-        this.transfer_date = Storage.formater.parse(Current_date.Get_current_date());
+        this(0, account_from_id, account_to_id, transfer_size);
     }
 
     @Override
@@ -65,11 +53,7 @@ public class Transfer {
         return transfer_id + ";" + original_transfer_id + ";" + transfer_status + ";" + account_from.GetAccount_id() + ";" + account_to.GetAccount_id() + ";" + transfer_size + ";" + Storage.formater.format(transfer_date);
     }
 
-
-    public static int Transfer_money(int account_number_from, int account_number_to, double transfer_size) throws Exception {
-        if (transfer_size < 0) {
-            throw new Exception("Нельзя выполнять переводы на отрицательную сумму.");
-        }
+    private static void Check_new_transfer_accounts_exist(int account_number_from, int account_number_to) throws Exception {
         List<Account> Accounts = Storage.Find_all_accounts();
         Account Account_from = new Account();
         Account Account_to = new Account();
@@ -82,57 +66,56 @@ public class Transfer {
             }
         }
         if (Account_from.account_number != account_number_from) {
-            throw new Exception("Не существует счёта, с которого вы хотите сделать перевод.");
+            throw new IllegalArgumentException("Не существует счёта, с которого вы хотите сделать перевод.");
         }
         if (Account_to.account_number != account_number_to) {
-            throw new Exception("Не существует счёта, на который вы хотите сделать перевод.");
+            throw new IllegalArgumentException("Не существует счёта, на который вы хотите сделать перевод.");
         }
-        Client.Client_status status = Account_from.Get_client().client_status;
-        if (status.equals(Client.Client_status.Unreliable)) {
+    }
+
+    private static void Check_new_transfer_money_available(int account_number_from, double transfer_size) throws Exception {
+        if (transfer_size < 0) {
+            throw new NumberFormatException("Нельзя выполнять переводы на отрицательную сумму.");
+        }
+        Account Account_from = Storage.Find(account_number_from);
+        if (Account_from.Get_client().client_status.equals(Client.Client_status.Unreliable)) {
             if (transfer_size > Account_from.Get_tariff().status_limit) {
-                throw new Exception("Ваш статус не позволяет вам сделать перевод выше суммы: " + Account_from.Get_tariff().status_limit);
+                throw new SecurityException("Ваш статус не позволяет вам сделать перевод выше суммы: " + Account_from.Get_tariff().status_limit);
             }
         }
-        int Transfer_id = -2;
         if (Account_from.account_type.equals("credit")) {
             double max_available = Account_from.account_amount + Account_from.Get_tariff().credit_limit;
             if (max_available < transfer_size) {
-                throw new Exception("У кредитного счёта при выполнении перевода будет превышен кредитный лимит. Максимально можно перевести: " + max_available);
-            } else {
-                Account_from.account_amount = Account_from.account_amount - transfer_size;
-                Account_to.account_amount = Account_to.account_amount + transfer_size;
-                Storage.Save(Account_from);
-                Storage.Save(Account_to);
-                Transfer_id = Storage.Save(new Transfer(Account_from.GetAccount_id(), Account_to.GetAccount_id(), transfer_size));
+                throw new IllegalArgumentException("У кредитного счёта при выполнении перевода будет превышен кредитный лимит. Максимально можно перевести: " + max_available);
             }
         }
         if (Account_from.account_type.equals("debit")) {
             if (Account_from.account_amount < transfer_size) {
-                throw new Exception("На дебетовом счёте не хватает денег для перевода. На нём сейчас лежит: " + Account_from.account_amount);
-            } else {
-                Account_from.account_amount = Account_from.account_amount - transfer_size;
-                Account_to.account_amount = Account_to.account_amount + transfer_size;
-                Storage.Save(Account_from);
-                Storage.Save(Account_to);
-                Transfer_id = Storage.Save(new Transfer(Account_from.GetAccount_id(), Account_to.GetAccount_id(), transfer_size));
+                throw new IllegalArgumentException("На дебетовом счёте не хватает денег для перевода. На нём сейчас лежит: " + Account_from.account_amount);
             }
         }
         if (Account_from.account_type.equals("deposit")) {
             if (Account_from.account_end_date.after(Storage.formater.parse(Current_date.Get_current_date()))) {
-                throw new Exception("С депозитного счёта нельзя снимать деньги до закрытия счёта. Счёт будет закрыт: " + Storage.formater.format(Account_from.account_end_date));
+                throw new IllegalArgumentException("С депозитного счёта нельзя снимать деньги до закрытия счёта. Счёт будет закрыт: " + Storage.formater.format(Account_from.account_end_date));
             } else {
                 if (Account_from.account_amount < transfer_size) {
-                    throw new Exception("На депозитном счёте не хватает денег для перевода. На нём сейчас лежит: " + Account_from.account_amount);
-                } else {
-                    Account_from.account_amount = Account_from.account_amount - transfer_size;
-                    Account_to.account_amount = Account_to.account_amount + transfer_size;
-                    Storage.Save(Account_from);
-                    Storage.Save(Account_to);
-                    Transfer_id = Storage.Save(new Transfer(Account_from.GetAccount_id(), Account_to.GetAccount_id(), transfer_size));
+                    throw new IllegalArgumentException("На депозитном счёте не хватает денег для перевода. На нём сейчас лежит: " + Account_from.account_amount);
                 }
             }
         }
-        return Transfer_id;
+    }
+
+    public static int Transfer_money(int account_number_from, int account_number_to, double transfer_size) throws Exception {
+        Check_new_transfer_accounts_exist(account_number_from, account_number_to);
+        Check_new_transfer_money_available(account_number_from, transfer_size);
+
+        Account Account_from = Storage.Find(account_number_from);
+        Account Account_to = Storage.Find(account_number_to);
+        Account_from.account_amount = Account_from.account_amount - transfer_size;
+        Account_to.account_amount = Account_to.account_amount + transfer_size;
+        Storage.Save(Account_from);
+        Storage.Save(Account_to);
+        return Storage.Save(new Transfer(Account_from.GetAccount_id(), Account_to.GetAccount_id(), transfer_size));
     }
 
     protected static int Cancel_transfer(int transfer_id) throws Exception {

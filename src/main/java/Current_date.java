@@ -1,3 +1,5 @@
+import java.util.Objects;
+
 public final class Current_date {
     private static Current_date instance;
     private String date;
@@ -7,7 +9,7 @@ public final class Current_date {
     }
 
     public static Current_date Set_current_date(String date) throws Exception {
-        if (instance == null) {
+        if (Objects.isNull(instance)) {
             instance = new Current_date(date);
         }
         instance.date = date;

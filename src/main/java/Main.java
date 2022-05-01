@@ -13,6 +13,7 @@ public class Main {
         System.out.println("Введите вашу фамилию.");
         String user_surname = scan.nextLine();
         System.out.println("В базе данных есть человек с данным именем и фамилией? Введите [да/нет].");
+        System.out.println("Если вы ошибётесь и скажете 'нет', когда нужно было сказать 'да', то дальнейшая корректная работа программы не гарантирована, т.к. будет создан лишний человек, которого необходимо будет удалять из базы данных.");
         String yes_or_now = scan.nextLine();
         Person user_person;
         String user_address;
@@ -48,6 +49,7 @@ public class Main {
         Bank user_bank = Storage.Find(user_bank_name);
         System.out.println("Вот ваш выбранный банк: " + user_bank);
         System.out.println("Вы уже являетесь клиентом данного банка? Введите [да/нет].");
+        System.out.println("Если вы ошибётесь и скажете 'нет', когда нужно было сказать 'да', то дальнейшая корректная работа программы не гарантирована, т.к. будет создан лишний клиент, которого необходимо будет удалять из базы данных.");
         yes_or_now = scan.nextLine();
         Client user_client;
         if (yes_or_now.equals("да")) {
@@ -100,6 +102,9 @@ public class Main {
                 System.out.println("Введите [10], если хотите снять деньги с вашего счёта (в банкомате).");
                 System.out.println("Введите [11], если хотите положить деньги на ваш счёт (в банкомате).");
                 System.out.println("Введите [12], если хотите перевести деньги по номеру счёта.");
+                System.out.println("Введите [13], если хотите закрыть ваш текущий счёт.");
+                System.out.println("Введите [14], если хотите узнать тип и статус вашего текущего счёта.");
+                System.out.println("Введите [15], если хотите узнать количество денег на балансе счёта на конкретную дату.");
             }
             if (x.equals("1")) {
                 end = true;
@@ -162,116 +167,25 @@ public class Main {
                 user_account.Transfer_money(user_account_number_to, user_account_transfer);
                 user_account = Storage.Find(user_account_number);
             }
+            if (x.equals("13")) {
+                user_account.Close_account();
+                System.out.println("Ваш счёт был успешно закрыт.");
+            }
+            if (x.equals("14")) {
+                System.out.println("Тип вашего текущего счёта: " + user_account.account_type);
+                if (user_account.account_end_date.getTime() <= Storage.formater.parse(Current_date.Get_current_date()).getTime()) {
+                    System.out.println("Ваш текущий счёт закрыт " + Storage.formater.format(user_account.account_end_date));
+                } else {
+                    System.out.println("Ваш текущий счёт открыт.");
+                }
+            }
+            if (x.equals("15")) {
+                System.out.println("Введите дату в формате dd.MM.yyyy (в стандартных условиях), на которую хотите узнать баланс текущего счёта.");
+                String data = scan.nextLine();
+                double balance = user_account.Get_balance(Storage.formater.parse(data));
+                System.out.println("Баланс на дату: " + data + " равен: " + balance);
+            }
         }
-
-        //System.out.println(Storage.Find_client_accounts(1));
-        //System.out.println(Current_date.Get_current_date());
-        //Current_date singleton = Current_date.Set_current_date("02.03.2023");
-        //Current_date anotherSingleton = Current_date.Set_current_date("02.03.2022");
-        //System.out.println(singleton.Get_current_date());
-        //System.out.println(anotherSingleton.Get_current_date());
-        //singleton.Set_current_date("01.02.2022");
-        //System.out.println(singleton.Get_current_date());
-        //System.out.println(anotherSingleton.Get_current_date());
-        //Current_date.Set_current_date("06.04.2022");
-
-        //System.out.println(Storage.Find("Kate", "Petrova"));
-        //System.out.println(Storage.Get_person_by_id(1));
-
-        //System.out.println(Storage.Find( "VTB"));
-        //System.out.println(Storage.Get_bank_by_id(2));
-        //System.out.println(Storage.Find_all_banks());
-
-        //System.out.println(Storage.Get_client_by_id(2));
-        //System.out.println("All clients of bank 3:");
-        //System.out.println(Storage.Get_bank_by_id(3).Get_all_clients());
-        //System.out.println(Storage.Find_all_clients());
-        //System.out.println(Storage.Find("Ivan", "Ivanov","Tinkoff"));
-
-        //System.out.println(Storage.Get_account_by_id(2));
-        //System.out.println(Storage.Find(11753421));
-        //System.out.println(Storage.Find_all_accounts());
-        //System.out.println("All accounts of bank 2:");
-        //System.out.println(Storage.Get_bank_by_id(2).Get_all_accounts());
-        //System.out.println(Storage.Find(4,"xxxxxx")); // пока не добавлена проверка типа счёта
-        //System.out.println(Storage.Get_account_type_by_id(4));
-
-        //System.out.println(Storage.Get_tariff_by_id(3));
-        //System.out.println(Storage.Find_all_tariffs());
-        //System.out.println("All tariffs of bank 4:");
-        //System.out.println(Storage.Get_bank_by_id(4).Get_all_tariffs());
-
-        //System.out.println(Storage.Find_all_account_types());
-
-        //System.out.println(Storage.Get_transfer_by_id(2));
-        //System.out.println(Storage.Find_all_transfers());
-
-        //System.out.println("Запись в файл:");
-        //System.out.println(Storage.Save(new Bank("Gazprombank"))); //создаем новый банк
-        //System.out.println(Storage.Save(new Bank(1,"Sber"))); //меняем имя банка по его id
-        //System.out.println(Storage.Save(new Bank(10,"xx"))); //меняем имя банка, id которого не существует. Будет выдаваться Exception
-        //System.out.println(Storage.Find_all_banks());
-
-        //System.out.println(Storage.Save(new Tariff(2,8,60000,35,800))); //создаем новый тариф
-        //System.out.println(Storage.Save(new Tariff(4,4,6,40000,60,1))); //меняем тариф по его id
-        //System.out.println(Storage.Save(new Tariff(10,2,3,11111,72,300))); //меняем тариф, id которого не существует. Будет выдаваться Exception
-        //System.out.println(Storage.Find_all_tariffs());
-
-        //System.out.println(Storage.Save(new Client(4,2, Storage.formater.parse("17.02.2014")))); //создаем нового клиента
-        //System.out.println(Storage.Save(new Client(4,2,1,Storage.formater.parse("24.07.2021")))); //меняем клиента по его id
-        //System.out.println(Storage.Save(new Client(10,4,1,Storage.formater.parse("25.08.2017")))); //меняем клиента, id которого не существует. Будет выдаваться Exception
-        //System.out.println(Storage.Find_all_clients());
-
-        //System.out.println(Storage.Save(new Account(2,1,2,23543567,9000,Storage.formater.parse("12.01.2005"),Storage.formater.parse("30.09.2006")))); //создаем новый счёт
-        //System.out.println(Storage.Save(new Account(3,2,1,2,23543568,9050,Storage.formater.parse("12.01.2010"),Storage.formater.parse("30.09.2015")))); //меняем счёт по его id
-        //System.out.println(Storage.Save(new Account(100,2,1,2,23543568,9050,Storage.formater.parse("12.01.2010"),Storage.formater.parse("30.09.2015")))); //меняем счёт, id которого не существует. Будет выдаваться Exception
-        //System.out.println(Storage.Find_all_accounts());
-
-        //System.out.println(Storage.Save(new Person("Андрей","Соколов","-","-"))); //создаем нового человека
-        //System.out.println(Storage.Save(new Person(3,"Елизавета","Мягкова","-","-"))); //меняем человека по его id
-        //System.out.println(Storage.Save(new Person(103,"Антон","Супрун","-","-"))); //меняем человека, id которого не существует. Будет выдаваться Exception
-        //System.out.println(Storage.Find_all_persons());
-
-        //System.out.println(Storage.Get_bank_by_id(2).Add_tariff(new Tariff(2,8,67000,35,800))); // добавить новый тариф
-        //System.out.println(Storage.Get_bank_by_id(2).Add_tariff(new Tariff(1,2,8,60000,35,800))); // изменить существующий тариф
-        //System.out.println(Storage.Get_bank_by_id(2).Add_tariff(new Tariff(3,8,60000,35,800))); // ошибка (нужен другой банк)
-
-        //System.out.println(Storage.Get_bank_by_id(2).Add_client(Storage.Get_person_by_id(2))); //создать клиента в банке
-        //Current_date.Set_current_date("07.04.2022"); //смена текущей даты
-        //Storage.Get_bank_by_id(2).Add_client(Storage.Get_person_by_id(4)); //создать клиента в банке после смены даты
-        //Storage.Get_bank_by_id(1).Add_client(Storage.Get_person_by_id(2)); //ошибка (такой клиент уже есть)
-
-        //System.out.println(Storage.Get_person_by_id(2).Create_client(2)); //создать клиента в банке
-        //System.out.println(Storage.Get_person_by_id(2).Create_client(2)); //ошибка (такой клиент уже есть)
-
-        //Storage.Get_person_by_id(4).Change_person_info("China 15","07 38 154962");
-        //System.out.println(Storage.Get_person_by_id(4).toString()); // данные человека с id=4 поменялись
-        //System.out.println(Storage.Get_client_by_id(1)); //клиент был Unreliable, стал Unlimited
-
-        //System.out.println(Storage.Save(new Transfer(2,3,60000))); //создаем новый трансфер,но не проводим его
-        //System.out.println(Storage.Save(new Transfer(1,-1,"Completed",4,5,1100,Storage.formater.parse("01.03.2020")))); //меняем трансфер по его id, не проводим не каких вычислений
-        //System.out.println(Storage.Save(new Transfer(1000,2,3,60000))); //меняем трансфер, id которого не существует. Будет выдаваться Exception
-        //System.out.println(Storage.Find_all_transfers());
-
-        //System.out.println(Storage.Get_client_by_id(2).Create_account("deposit",6));
-        //System.out.println(Storage.Get_client_by_id(2).Create_account("credit",7));
-        //Storage.Get_client_by_id(2).Create_account("debit",5); //ошибка (у этого клиента уже есть такой счёт)
-
-        //System.out.println(Transfer.Transfer_money(11111111,23548341,1100)); //Успешный перевод
-        //System.out.println(Transfer.Transfer_money(12891530,23548341,120000)); //На дебетовом счёте не хватает денег для перевода
-        //System.out.println(Transfer.Transfer_money(94815200,23548341,15001.0)); //На депозитном счёте не хватает денег для перевода
-        //System.out.println(Transfer.Transfer_money(35987614,23548341,200000)); // перевод отменится из-за статуса
-
-        //System.out.println(Transfer.Transfer_money(23548341,94815200,200));
-        //System.out.println(Transfer.Cancel_transfer(5));
-        // System.out.println(Transfer.Cancel_transfer(100)); //нет трансфреа с таким id, будет ошибка
-
-        //System.out.println(Storage.Get_account_by_id(1).Transfer_money(12891530,500));
-        //Storage.Get_account_by_id(1).Supplement_balance(700);
-        //Storage.Get_account_by_id(2).Get_cash(500);
-
-        //System.out.println(Storage.Get_account_by_id(1).Get_balance(Storage.formater.parse("10.04.2022"))); //10.04.2022 возвращался баланс на счёте с id=1
-        //System.out.println(Storage.Get_account_by_id(1).Get_balance(Storage.formater.parse("22.02.2021"))); // not emplemented yet
 
         //   private void Skip_period(Date date) throws Exception {
         //        throw new Exception("not emplemented yet");

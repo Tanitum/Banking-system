@@ -73,6 +73,26 @@ public class Transfer {
         }
     }
 
+    private static void Check_new_transfer_accounts_not_closed(int account_number_from, int account_number_to) throws Exception {
+        List<Account> Accounts = Storage.Find_all_accounts();
+        Account Account_from = new Account();
+        Account Account_to = new Account();
+        for (Account item : Accounts) {
+            if (item.account_number == account_number_from) {
+                Account_from = item;
+            }
+            if (item.account_number == account_number_to) {
+                Account_to = item;
+            }
+        }
+        if (Account_from.account_end_date.getTime() <= Storage.formater.parse(Current_date.Get_current_date()).getTime() && Account_from.account_type_id != 3) {
+            throw new IllegalArgumentException("Cчёт, с которого отправляются деньги, закрыт.");
+        }
+        if (Account_to.account_end_date.getTime() <= Storage.formater.parse(Current_date.Get_current_date()).getTime()) {
+            throw new IllegalArgumentException("Cчёт, на который отправляются деньги, закрыт.");
+        }
+    }
+
     private static void Check_new_transfer_money_available(int account_number_from, double transfer_size) throws Exception {
         if (transfer_size < 0) {
             throw new NumberFormatException("Нельзя выполнять переводы на отрицательную сумму.");
@@ -107,6 +127,7 @@ public class Transfer {
 
     public static int Transfer_money(int account_number_from, int account_number_to, double transfer_size) throws Exception {
         Check_new_transfer_accounts_exist(account_number_from, account_number_to);
+        Check_new_transfer_accounts_not_closed(account_number_from, account_number_to);
         Check_new_transfer_money_available(account_number_from, transfer_size);
 
         Account Account_from = Storage.Find(account_number_from);

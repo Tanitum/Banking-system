@@ -75,7 +75,12 @@ public class Client {
     }
 
     public void Close_account(int account_number) throws Exception {
-        throw new Exception("not emplemented yet");
+        Account account = Storage.Find(account_number);
+        if (account.client_id == client_id) {
+            account.Close_account();
+        } else {
+            throw new IllegalArgumentException("Вы не можете закрыть счёт, который привязан к другому клиенту.");
+        }
     }
 
     private void Client_status_checker() throws Exception {

@@ -19,4 +19,8 @@ public class Debit_account extends Account {
     public int Create() throws Exception {
         return Storage.Save(new Account(client_id, tariff_id, account_type_id, account_number, account_amount, Storage.formater.parse(Current_date.Get_current_date()), account_end_date));
     }
+
+    public double Calculate_percent() throws Exception {
+        return 0;
+    }
 }

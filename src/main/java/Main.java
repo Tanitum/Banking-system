@@ -4,7 +4,8 @@ public class Main {
     public static Scanner scan = new Scanner(System.in);
 
     public static void main(String[] args) throws Exception {
-
+        // админ может рассчитать все проценты, изменить дату, узнать и изменить любую информацию базы данных.
+        // System.out.println(Storage.Get_account_by_id(-1).Calculate_percent(Storage.formater.parse(Current_date.Get_current_date())));
         System.out.println("Введите ваше имя.");
         String user_name = scan.nextLine();
         if (user_name.equals("Admin")) {
@@ -186,9 +187,5 @@ public class Main {
                 System.out.println("Баланс на дату: " + data + " равен: " + balance);
             }
         }
-
-        //   private void Skip_period(Date date) throws Exception {
-        //        throw new Exception("not emplemented yet");
-        //    }
     }
 }

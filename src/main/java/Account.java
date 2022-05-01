@@ -88,8 +88,28 @@ public class Account {
     }
 
     public String Calculate_percent(Date date) throws Exception {
-        throw new Exception("not emplemented yet");
-        //return "x";
+        if (date.equals(Storage.formater.parse(Current_date.Get_current_date()))) {
+            List<Account> Accounts = Storage.Find_all_accounts();
+            for (Account item : Accounts) {
+                if (date.getTime() < item.account_end_date.getTime() && date.getTime() >= item.account_start_date.getTime() && item.account_number != 11111111) {
+                    if (item.account_type_id == 1) {
+                        Credit_account credit_account = new Credit_account(item.account_id, item.client_id, item.tariff_id, item.account_type_id, item.account_number, item.Get_balance(date), item.account_start_date, item.account_end_date);
+                        Transfer.Transfer_money(item.account_number, 11111111, Math.abs(credit_account.Calculate_percent()));
+                        // Возможно, при слишком больших накопленных суммах процентов будет превышен кредитный лимит или лимит из-за статуса.
+                    } else if (item.account_type_id == 2) {
+                        Debit_account debit_account = new Debit_account(item.account_id, item.client_id, item.tariff_id, item.account_type_id, item.account_number, item.Get_balance(date), item.account_start_date, item.account_end_date);
+                        Transfer.Transfer_money(11111111, item.account_number, debit_account.Calculate_percent());
+                        // Не уверен, что нужны эти нулевые переводы, т.к. хранилище данных заполняется лишней информацией.
+                    } else if (item.account_type_id == 3) {
+                        Deposit_account deposit_account = new Deposit_account(item.account_id, item.client_id, item.tariff_id, item.account_type_id, item.account_number, item.Get_balance(date), item.account_start_date, item.account_end_date);
+                        Transfer.Transfer_money(11111111, item.account_number, deposit_account.Calculate_percent());
+                    }
+                }
+            }
+            return "Проценты успешно начислены";
+        } else {
+            throw new SecurityException("Невозможно рассчитать проценты на дату, которая не совпадает с Current_date. Вы - админ, вы можете поменять Current_date.");
+        }
     }
 
     public int Transfer_money(int account_number_to, double transfer_size) throws Exception {

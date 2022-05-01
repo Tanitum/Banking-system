@@ -23,4 +23,13 @@ public class Credit_account extends Account {
     public int Create() throws Exception {
         return Storage.Save(new Account(client_id, tariff_id, account_type_id, account_number, account_amount, Storage.formater.parse(Current_date.Get_current_date()), account_end_date));
     }
+
+    public double Calculate_percent() throws Exception {
+        double calculated_percent = 0;
+        if (this.account_amount < 0) {
+            calculated_percent = Math.ceil((account_amount * (credit_commission * 0.01)) * 1000) / 1000; //1000 -> 3 знака после запятой
+            account_amount = account_amount + calculated_percent;
+        }
+        return calculated_percent;
+    }
 }

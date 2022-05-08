@@ -6,13 +6,13 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Storage {
-    private static String Person_file_name = "Banking-system/src/main/resources/Person.csv";
-    private static String Bank_file_name = "Banking-system/src/main/resources/Bank.csv";
-    private static String Client_file_name = "Banking-system/src/main/resources/Client.csv";
-    private static String Account_file_name = "Banking-system/src/main/resources/Account.csv";
-    private static String Account_type_file_name = "Banking-system/src/main/resources/Account_type.csv";
-    private static String Tariff_file_name = "Banking-system/src/main/resources/Tariff.csv";
-    private static String Transfer_file_name = "Banking-system/src/main/resources/Transfer.csv";
+    private static String Person_file_name = "src/main/resources/Person.csv";
+    private static String Bank_file_name = "src/main/resources/Bank.csv";
+    private static String Client_file_name = "src/main/resources/Client.csv";
+    private static String Account_file_name = "src/main/resources/Account.csv";
+    private static String Account_type_file_name = "src/main/resources/Account_type.csv";
+    private static String Tariff_file_name = "src/main/resources/Tariff.csv";
+    private static String Transfer_file_name = "src/main/resources/Transfer.csv";
     public static SimpleDateFormat formater = new SimpleDateFormat("dd.MM.yyyy");
 
     private static List<String[]> Read_file(String object_type) throws Exception {

@@ -1,0 +1,7 @@
+sudo apt update
+sudo apt upgrade
+sudo apt install maven
+git clone git@github.com:Tanitum/Banking-system.git
+cd Banking-system
+mvn clean install
+mvn exec:java -Dexec.mainClass="Main"

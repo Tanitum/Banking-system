@@ -66,10 +66,10 @@ public class Transfer {
             }
         }
         if (Account_from.account_number != account_number_from) {
-            throw new IllegalArgumentException("Не существует счёта, с которого вы хотите сделать перевод.");
+            throw new IllegalArgumentException(Storage.Find_at_glossary("EXCEPTION_ACCOUNT_FROM_NOT_EXISTS"));
         }
         if (Account_to.account_number != account_number_to) {
-            throw new IllegalArgumentException("Не существует счёта, на который вы хотите сделать перевод.");
+            throw new IllegalArgumentException(Storage.Find_at_glossary("EXCEPTION_ACCOUNT_TO_NOT_EXISTS"));
         }
     }
 
@@ -86,40 +86,40 @@ public class Transfer {
             }
         }
         if (Account_from.account_end_date.getTime() <= Storage.formater.parse(Current_date.Get_current_date()).getTime() && Account_from.account_type_id != 3) {
-            throw new IllegalArgumentException("Cчёт, с которого отправляются деньги, закрыт.");
+            throw new IllegalArgumentException(Storage.Find_at_glossary("EXCEPTION_ACCOUNT_FROM_CLOSED"));
         }
         if (Account_to.account_end_date.getTime() <= Storage.formater.parse(Current_date.Get_current_date()).getTime()) {
-            throw new IllegalArgumentException("Cчёт, на который отправляются деньги, закрыт.");
+            throw new IllegalArgumentException(Storage.Find_at_glossary("EXCEPTION_ACCOUNT_TO_CLOSED"));
         }
     }
 
     private static void Check_new_transfer_money_available(int account_number_from, double transfer_size) throws Exception {
         if (transfer_size < 0) {
-            throw new NumberFormatException("Нельзя выполнять переводы на отрицательную сумму.");
+            throw new NumberFormatException(Storage.Find_at_glossary("EXCEPTION_NEGATIVE_TRANSFER_AMOUNT"));
         }
         Account Account_from = Storage.Find(account_number_from);
         if (Account_from.Get_client().client_status.equals(Client.Client_status.Unreliable)) {
             if (transfer_size > Account_from.Get_tariff().status_limit) {
-                throw new SecurityException("Ваш статус не позволяет вам сделать перевод выше суммы: " + Account_from.Get_tariff().status_limit);
+                throw new SecurityException(Storage.Find_at_glossary("EXCEPTION_STATUS_LIMIT") + Account_from.Get_tariff().status_limit);
             }
         }
         if (Account_from.account_type.equals("credit")) {
             double max_available = Account_from.account_amount + Account_from.Get_tariff().credit_limit;
             if (max_available < transfer_size) {
-                throw new IllegalArgumentException("У кредитного счёта при выполнении перевода будет превышен кредитный лимит. Максимально можно перевести: " + max_available);
+                throw new IllegalArgumentException(Storage.Find_at_glossary("EXCEPTION_NOT_ENOUGH_MONEY") + max_available);
             }
         }
         if (Account_from.account_type.equals("debit")) {
             if (Account_from.account_amount < transfer_size) {
-                throw new IllegalArgumentException("На дебетовом счёте не хватает денег для перевода. На нём сейчас лежит: " + Account_from.account_amount);
+                throw new IllegalArgumentException(Storage.Find_at_glossary("EXCEPTION_NOT_ENOUGH_MONEY") + Account_from.account_amount);
             }
         }
         if (Account_from.account_type.equals("deposit")) {
             if (Account_from.account_end_date.after(Storage.formater.parse(Current_date.Get_current_date()))) {
-                throw new IllegalArgumentException("С депозитного счёта нельзя снимать деньги до закрытия счёта. Счёт будет закрыт: " + Storage.formater.format(Account_from.account_end_date));
+                throw new IllegalArgumentException(Storage.Find_at_glossary("EXCEPTION_ACCOUNT_NOT_CLOSED") + Storage.formater.format(Account_from.account_end_date));
             } else {
                 if (Account_from.account_amount < transfer_size) {
-                    throw new IllegalArgumentException("На депозитном счёте не хватает денег для перевода. На нём сейчас лежит: " + Account_from.account_amount);
+                    throw new IllegalArgumentException(Storage.Find_at_glossary("EXCEPTION_NOT_ENOUGH_MONEY") + Account_from.account_amount);
                 }
             }
         }
@@ -142,7 +142,7 @@ public class Transfer {
     protected static int Cancel_transfer(int transfer_id) throws Exception {
         Transfer start_transfer = Storage.Get_transfer_by_id(transfer_id);
         if (start_transfer.transfer_status != Transfer_status.Completed) {
-            throw new Exception("Трансфер нельзя отменить, т.к. он: " + start_transfer.transfer_status);
+            throw new Exception(Storage.Find_at_glossary("EXCEPTION_TRANSFER_CAN_NOT_BE_CANCELED") + start_transfer.transfer_status);
         }
         Transfer reverse_transfer = Storage.Get_transfer_by_id(Transfer.Transfer_money(start_transfer.account_to.account_number, start_transfer.account_from.account_number, start_transfer.transfer_size));
         start_transfer.transfer_status = Transfer_status.Rejected;

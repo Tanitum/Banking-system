@@ -48,7 +48,7 @@ public class Person {
         List<Client> Clients = Storage.Find_all_clients();
         for (Client item : Clients) {
             if (item.person_id == person_id && item.bank_id == bank_id) {
-                throw new ObjectAlreadyExistsException("Вы пытаетесь сделать человека клиентом банка, клиентом которого он уже является. Клиентский id этого человека в этом банке: " + item.client_id);
+                throw new ObjectAlreadyExistsException(Storage.Find_at_glossary("EXCEPTION_PERSON_ALREADY_CLIENT") + item.client_id);
             }
         }
         return Storage.Save(new Client(person_id, bank_id, Storage.formater.parse(Current_date.Get_current_date())));

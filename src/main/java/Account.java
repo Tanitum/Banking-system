@@ -62,14 +62,14 @@ public class Account {
 
     public double Get_balance(Date date) throws Exception {
         if (account_number == 11111111) {
-            throw new Exception("Это счёт админа с бесконечными деньгами, которые взялись из воздуха. Для него невозможно рассчитать баланс на дату");
+            throw new SecurityException(Storage.Find_at_glossary("EXCEPTION_ADMIN_ACCOUNT"));
         }
         if (Storage.formater.format(date).equals(Current_date.Get_current_date())) {
             return this.account_amount;
         } else if (date.getTime() > Storage.formater.parse(Current_date.Get_current_date()).getTime()) {
-            throw new IllegalArgumentException("Невозможно узнать о балансе счёта в будущем.");
+            throw new IllegalArgumentException(Storage.Find_at_glossary("EXCEPTION_ACCOUNT_BALANCE_IN_FUTURE"));
         } else if (account_start_date.getTime() > date.getTime()) {
-            throw new IllegalArgumentException("На эту дату счёт ещё не был создан");
+            throw new IllegalArgumentException(Storage.Find_at_glossary("EXCEPTION_NO_ACCOUNT_AT_DATE"));
         } else {
             double balance = 0;
             List<Transfer> transfers = Storage.Find_all_transfers();
@@ -106,9 +106,9 @@ public class Account {
                     }
                 }
             }
-            return "Проценты успешно начислены";
+            return Storage.Find_at_glossary("PERCENT_ADDED");
         } else {
-            throw new SecurityException("Невозможно рассчитать проценты на дату, которая не совпадает с Current_date. Вы - админ, вы можете поменять Current_date.");
+            throw new SecurityException(Storage.Find_at_glossary("EXCEPTION_PERCENT_AT_DATE"));
         }
     }
 
@@ -127,10 +127,10 @@ public class Account {
     public void Close_account() throws Exception {
         Account account = Storage.Find(account_number);
         if (account.account_end_date.getTime() <= Storage.formater.parse(Current_date.Get_current_date()).getTime()) {
-            throw new IllegalArgumentException("Данный счёт уже был закрыт " + Storage.formater.format(account.account_end_date));
+            throw new IllegalArgumentException(Storage.Find_at_glossary("ACCOUNT_CLOSED") + Storage.formater.format(account.account_end_date));
         }
         if (account.account_amount != 0) {
-            throw new IllegalArgumentException("Нельзя закрыть счёт с ненулевым балансом. Баланс счёта: " + account.account_amount);
+            throw new IllegalArgumentException(Storage.Find_at_glossary("EXCEPTION_ACCOUNT_BALANCE_NOT_NULL") + account.account_amount);
         }
         this.account_end_date = Storage.formater.parse(Current_date.Get_current_date());
         account.account_end_date = Storage.formater.parse(Current_date.Get_current_date());

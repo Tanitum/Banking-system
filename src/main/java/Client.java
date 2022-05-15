@@ -48,10 +48,10 @@ public class Client {
         List<Account> Accounts = Storage.Find_all_accounts();
         for (Account item : Accounts) {
             if (item.account_type.equals(account_type) && item.client_id == client_id) {
-                throw new ObjectAlreadyExistsException("Счёт данного типа у данного клиента уже существует. id этого счёта: " + item.account_id);
+                throw new ObjectAlreadyExistsException(Storage.Find_at_glossary("EXCEPTION_ACCOUNT_WITH_TYPE_ALREADY_EXISTS") + item.account_id);
             }
             if (item.account_number == account_number) {
-                throw new ObjectAlreadyExistsException("Счёт c данным номером уже существует. Придумайте другой номер счёта");
+                throw new ObjectAlreadyExistsException(Storage.Find_at_glossary("EXCEPTION_ACCOUNT_WITH_NUMBER_ALREADY_EXISTS"));
             }
         }
     }
@@ -69,7 +69,7 @@ public class Client {
             Deposit_account deposit_account = new Deposit_account(client_id, Bank_tariffs.get(0).GetTariff_id(), account_number);
             return deposit_account.Create();
         } else {
-            throw new IllegalArgumentException("вы ввели некорректный тип счёта");
+            throw new IllegalArgumentException(Storage.Find_at_glossary("EXCEPTION_ACCOUNT_TYPE"));
         }
         //по умолчанию берется первый найденный тариф в банке, в котором создан данный клиент.
     }
@@ -79,7 +79,7 @@ public class Client {
         if (account.client_id == client_id) {
             account.Close_account();
         } else {
-            throw new IllegalArgumentException("Вы не можете закрыть счёт, который привязан к другому клиенту.");
+            throw new IllegalArgumentException(Storage.Find_at_glossary("EXCEPTION_CLOSING_ACCOUNT_CLIENT"));
         }
     }
 

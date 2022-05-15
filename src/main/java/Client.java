@@ -60,13 +60,25 @@ public class Client {
         Check_new_account(account_type, account_number);
         List<Tariff> Bank_tariffs = Storage.Get_bank_by_id(bank_id).Get_all_tariffs();
         if (account_type.equals("credit") || account_type.equals("Credit")) {
-            Credit_account credit_account = new Credit_account(client_id, Bank_tariffs.get(0).GetTariff_id(), account_number);
+            Credit_account credit_account = new Credit_account.CreditAccountBuilder()
+                    .withClientId(client_id)
+                    .withTariffId(Bank_tariffs.get(0).GetTariff_id())
+                    .withAccountNumber(account_number)
+                    .build();
             return credit_account.Create();
         } else if (account_type.equals("debit") || account_type.equals("Debit")) {
-            Debit_account debit_account = new Debit_account(client_id, Bank_tariffs.get(0).GetTariff_id(), account_number);
+            Debit_account debit_account = new Debit_account.DebitAccountBuilder()
+                    .withClientId(client_id)
+                    .withTariffId(Bank_tariffs.get(0).GetTariff_id())
+                    .withAccountNumber(account_number)
+                    .build();
             return debit_account.Create();
         } else if (account_type.equals("deposit") || account_type.equals("Deposit")) {
-            Deposit_account deposit_account = new Deposit_account(client_id, Bank_tariffs.get(0).GetTariff_id(), account_number);
+            Deposit_account deposit_account = new Deposit_account.DepositAccountBuilder()
+                    .withClientId(client_id)
+                    .withTariffId(Bank_tariffs.get(0).GetTariff_id())
+                    .withAccountNumber(account_number)
+                    .build();
             return deposit_account.Create();
         } else {
             throw new IllegalArgumentException(Storage.Find_at_glossary("EXCEPTION_ACCOUNT_TYPE"));

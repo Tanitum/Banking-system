@@ -284,7 +284,16 @@ public class Storage {
         List<String[]> list = Read_file("Account");
         for (String[] item : list) {
             if (account_number.toString().equals(item[4])) {
-                return new Account(Integer.valueOf(item[0]), Integer.valueOf(item[1]), Integer.valueOf(item[2]), Integer.valueOf(item[3]), Integer.valueOf(item[4]), Double.valueOf(item[5]), formater.parse(item[6]), formater.parse(item[7]));
+                return new Account.AccountBuilder()
+                        .withAccountId(Integer.valueOf(item[0]))
+                        .withClientId(Integer.valueOf(item[1]))
+                        .withTariffId(Integer.valueOf(item[2]))
+                        .withAccountTypeId(Integer.valueOf(item[3]))
+                        .withAccountNumber(Integer.valueOf(item[4]))
+                        .withAccountAmount(Double.valueOf(item[5]))
+                        .withAccountStartDate(formater.parse(item[6]))
+                        .withAccountEndDate(formater.parse(item[7]))
+                        .build();
             }
         }
         throw new IllegalArgumentException(Storage.Find_at_glossary("EXCEPTION_ACCOUNT_NOT_EXISTS"));
@@ -294,7 +303,16 @@ public class Storage {
         List<String[]> list = Read_file("Account");
         List<Account> Account_list = new ArrayList<Account>();
         for (String[] item : list) {
-            Account_list.add(new Account(Integer.valueOf(item[0]), Integer.valueOf(item[1]), Integer.valueOf(item[2]), Integer.valueOf(item[3]), Integer.valueOf(item[4]), Double.valueOf(item[5]), formater.parse(item[6]), formater.parse(item[7])));
+            Account_list.add(new Account.AccountBuilder()
+                    .withAccountId(Integer.valueOf(item[0]))
+                    .withClientId(Integer.valueOf(item[1]))
+                    .withTariffId(Integer.valueOf(item[2]))
+                    .withAccountTypeId(Integer.valueOf(item[3]))
+                    .withAccountNumber(Integer.valueOf(item[4]))
+                    .withAccountAmount(Double.valueOf(item[5]))
+                    .withAccountStartDate(formater.parse(item[6]))
+                    .withAccountEndDate(formater.parse(item[7]))
+                    .build());
         }
         return Account_list;
     }
@@ -303,7 +321,16 @@ public class Storage {
         List<String[]> list = Read_file("Account");
         for (String[] item : list) {
             if (account_id.toString().equals(item[0])) {
-                return new Account(Integer.valueOf(item[0]), Integer.valueOf(item[1]), Integer.valueOf(item[2]), Integer.valueOf(item[3]), Integer.valueOf(item[4]), Double.valueOf(item[5]), formater.parse(item[6]), formater.parse(item[7]));
+                return new Account.AccountBuilder()
+                        .withAccountId(Integer.valueOf(item[0]))
+                        .withClientId(Integer.valueOf(item[1]))
+                        .withTariffId(Integer.valueOf(item[2]))
+                        .withAccountTypeId(Integer.valueOf(item[3]))
+                        .withAccountNumber(Integer.valueOf(item[4]))
+                        .withAccountAmount(Double.valueOf(item[5]))
+                        .withAccountStartDate(formater.parse(item[6]))
+                        .withAccountEndDate(formater.parse(item[7]))
+                        .build();
             }
         }
         throw new IllegalArgumentException(Storage.Find_at_glossary("EXCEPTION_ACCOUNT_NOT_EXISTS"));
@@ -323,7 +350,16 @@ public class Storage {
                 Fw.append('\n');
             }
             account_id = max_id + 1;
-            Account_list.add(new Account(account_id, account.client_id, account.tariff_id, account.account_type_id, account.account_number, account.account_amount, account.account_start_date, account.account_end_date));
+            Account_list.add(new Account.AccountBuilder()
+                    .withAccountId(account_id)
+                    .withClientId(account.client_id)
+                    .withTariffId(account.tariff_id)
+                    .withAccountTypeId(account.account_type_id)
+                    .withAccountNumber(account.account_number)
+                    .withAccountAmount(account.account_amount)
+                    .withAccountStartDate(account.account_start_date)
+                    .withAccountEndDate(account.account_end_date)
+                    .build());
             Fw.write(account_id + ";" + account.client_id + ";" + account.tariff_id + ";" + account.account_type_id + ";" + account.account_number + ";" + account.account_amount + ";" + formater.format(account.account_start_date) + ";" + formater.format(account.account_end_date));
             Fw.append('\n');
         } else {

@@ -48,10 +48,10 @@ public class Client {
         List<Account> Accounts = Storage.Find_all_accounts();
         for (Account item : Accounts) {
             if (item.account_type.equals(account_type) && item.client_id == client_id) {
-                throw new ObjectAlreadyExistsException("Счёт данного типа у данного клиента уже существует. id этого счёта: " + item.account_id);
+                throw new ObjectAlreadyExistsException(Storage.Find_at_glossary("EXCEPTION_ACCOUNT_WITH_TYPE_ALREADY_EXISTS") + item.account_id);
             }
             if (item.account_number == account_number) {
-                throw new ObjectAlreadyExistsException("Счёт c данным номером уже существует. Придумайте другой номер счёта");
+                throw new ObjectAlreadyExistsException(Storage.Find_at_glossary("EXCEPTION_ACCOUNT_WITH_NUMBER_ALREADY_EXISTS"));
             }
         }
     }
@@ -60,16 +60,28 @@ public class Client {
         Check_new_account(account_type, account_number);
         List<Tariff> Bank_tariffs = Storage.Get_bank_by_id(bank_id).Get_all_tariffs();
         if (account_type.equals("credit") || account_type.equals("Credit")) {
-            Credit_account credit_account = new Credit_account(client_id, Bank_tariffs.get(0).GetTariff_id(), account_number);
+            Credit_account credit_account = new Credit_account.CreditAccountBuilder()
+                    .withClientId(client_id)
+                    .withTariffId(Bank_tariffs.get(0).GetTariff_id())
+                    .withAccountNumber(account_number)
+                    .build();
             return credit_account.Create();
         } else if (account_type.equals("debit") || account_type.equals("Debit")) {
-            Debit_account debit_account = new Debit_account(client_id, Bank_tariffs.get(0).GetTariff_id(), account_number);
+            Debit_account debit_account = new Debit_account.DebitAccountBuilder()
+                    .withClientId(client_id)
+                    .withTariffId(Bank_tariffs.get(0).GetTariff_id())
+                    .withAccountNumber(account_number)
+                    .build();
             return debit_account.Create();
         } else if (account_type.equals("deposit") || account_type.equals("Deposit")) {
-            Deposit_account deposit_account = new Deposit_account(client_id, Bank_tariffs.get(0).GetTariff_id(), account_number);
+            Deposit_account deposit_account = new Deposit_account.DepositAccountBuilder()
+                    .withClientId(client_id)
+                    .withTariffId(Bank_tariffs.get(0).GetTariff_id())
+                    .withAccountNumber(account_number)
+                    .build();
             return deposit_account.Create();
         } else {
-            throw new IllegalArgumentException("вы ввели некорректный тип счёта");
+            throw new IllegalArgumentException(Storage.Find_at_glossary("EXCEPTION_ACCOUNT_TYPE"));
         }
         //по умолчанию берется первый найденный тариф в банке, в котором создан данный клиент.
     }
@@ -79,7 +91,7 @@ public class Client {
         if (account.client_id == client_id) {
             account.Close_account();
         } else {
-            throw new IllegalArgumentException("Вы не можете закрыть счёт, который привязан к другому клиенту.");
+            throw new IllegalArgumentException(Storage.Find_at_glossary("EXCEPTION_CLOSING_ACCOUNT_CLIENT"));
         }
     }
 

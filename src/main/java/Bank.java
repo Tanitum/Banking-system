@@ -62,7 +62,7 @@ public class Bank {
         if (tariff.GetBank_id() == bank_id) {
             return Storage.Save(tariff);
         } else {
-            throw new IllegalArgumentException("Вы пытаетесь сохранить тариф какого-то другого банка (id которого отличается от выбранного).");
+            throw new IllegalArgumentException(Storage.Find_at_glossary("EXCEPTION_BAD_BANK_OF_TARIFF"));
         }
     }
 
@@ -70,7 +70,7 @@ public class Bank {
         List<Client> Clients = Storage.Find_all_clients();
         for (Client item : Clients) {
             if (item.person_id == person.GetPerson_id() && item.bank_id == bank_id) {
-                throw new ObjectAlreadyExistsException("Вы пытаетесь сделать человека клиентом банка, клиентом которого он уже является. Клиентский id этого человека в этом банке: " + item.client_id);
+                throw new ObjectAlreadyExistsException(Storage.Find_at_glossary("EXCEPTION_PERSON_ALREADY_CLIENT") + item.client_id);
             }
         }
         return Storage.Save(new Client(person.GetPerson_id(), bank_id, Storage.formater.parse(Current_date.Get_current_date())));

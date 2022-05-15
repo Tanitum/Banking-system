@@ -4,24 +4,75 @@ public class Credit_account extends Account {
     int credit_commission;
     double credit_limit;
 
-    protected Credit_account(int account_id, int client_id, int tariff_id, int account_type_id, int account_number, double account_amount, Date account_start_date, Date account_end_date) throws Exception {
-        super(account_id, client_id, tariff_id, account_type_id, account_number, account_amount, account_start_date, account_end_date);
-        this.account_type = "credit";
+    protected Credit_account() throws Exception {
+        this.account_id = 0;
         this.account_type_id = 1;
-        this.credit_commission = Storage.Get_tariff_by_id(tariff_id).credit_commission;
-        this.credit_limit = Storage.Get_tariff_by_id(tariff_id).credit_limit;
+        this.account_type = "credit";
+        this.account_start_date = Storage.formater.parse(Current_date.Get_current_date());
+        this.account_end_date = Storage.formater.parse("31.12.9999");
+        this.account_amount = 0;
     }
 
-    protected Credit_account(int client_id, int tariff_id, int account_type_id, int account_number, double account_amount, Date account_start_date, Date account_end_date) throws Exception {
-        this(0, client_id, tariff_id, account_type_id, account_number, account_amount, account_start_date, account_end_date);
-    }
+    public static class CreditAccountBuilder {
+        private Credit_account newCreditAccount;
 
-    protected Credit_account(int client_id, int tariff_id, int account_number) throws Exception {
-        this(0, client_id, tariff_id, 1, account_number, 0, Storage.formater.parse(Current_date.Get_current_date()), Storage.formater.parse("31.12.9999"));
+        public CreditAccountBuilder() throws Exception {
+            newCreditAccount = new Credit_account();
+        }
+
+        public Credit_account.CreditAccountBuilder withAccountId(int account_id) {
+            newCreditAccount.account_id = account_id;
+            return this;
+        }
+
+        public Credit_account.CreditAccountBuilder withClientId(int client_id) {
+            newCreditAccount.client_id = client_id;
+            return this;
+        }
+
+        public Credit_account.CreditAccountBuilder withTariffId(int tariff_id) throws Exception {
+            newCreditAccount.tariff_id = tariff_id;
+            newCreditAccount.credit_commission = Storage.Get_tariff_by_id(tariff_id).credit_commission;
+            newCreditAccount.credit_limit = Storage.Get_tariff_by_id(tariff_id).credit_limit;
+            return this;
+        }
+
+        public Credit_account.CreditAccountBuilder withAccountNumber(int account_number) {
+            newCreditAccount.account_number = account_number;
+            return this;
+        }
+
+        public Credit_account.CreditAccountBuilder withAccountAmount(double account_amount) {
+            newCreditAccount.account_amount = account_amount;
+            return this;
+        }
+
+        public Credit_account.CreditAccountBuilder withAccountStartDate(Date account_start_date) {
+            newCreditAccount.account_start_date = account_start_date;
+            return this;
+        }
+
+        public Credit_account.CreditAccountBuilder withAccountEndDate(Date account_end_date) {
+            newCreditAccount.account_end_date = account_end_date;
+            return this;
+        }
+
+        public Credit_account build() {
+            return newCreditAccount;
+        }
+
     }
 
     public int Create() throws Exception {
-        return Storage.Save(new Account(client_id, tariff_id, account_type_id, account_number, account_amount, Storage.formater.parse(Current_date.Get_current_date()), account_end_date));
+        return Storage.Save(new Account.AccountBuilder()
+                .withClientId(client_id)
+                .withTariffId(tariff_id)
+                .withAccountTypeId(account_type_id)
+                .withAccountNumber(account_number)
+                .withAccountAmount(account_amount)
+                .withAccountStartDate(Storage.formater.parse(Current_date.Get_current_date()))
+                .withAccountEndDate(account_end_date)
+                .build());
     }
 
     public double Calculate_percent() throws Exception {

@@ -13,7 +13,18 @@ public class Storage {
     private static String Account_type_file_name = "src/main/resources/Account_type.csv";
     private static String Tariff_file_name = "src/main/resources/Tariff.csv";
     private static String Transfer_file_name = "src/main/resources/Transfer.csv";
-    public static SimpleDateFormat formater = new SimpleDateFormat("dd.MM.yyyy");
+
+    private static String Glossary_file_name = "src/main/resources/Glossary.csv";
+
+    public static SimpleDateFormat formater;
+
+    static {
+        try {
+            formater = new SimpleDateFormat(Storage.Find_at_glossary("DATE_FORMAT"));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     private static List<String[]> Read_file(String object_type) throws Exception {
         String file_name = "";
@@ -39,6 +50,9 @@ public class Storage {
             case "Transfer":
                 file_name = Transfer_file_name;
                 break;
+            case "Glossary":
+                file_name = Glossary_file_name;
+                break;
             default:
                 break;
         }
@@ -59,7 +73,7 @@ public class Storage {
                 return new Person(Integer.valueOf(item[0]), item[1], item[2], item[3], item[4]);
             }
         }
-        throw new IllegalArgumentException("Вы пытаетесь найти несуществующего человека.");
+        throw new IllegalArgumentException(Storage.Find_at_glossary("EXCEPTION_PERSON_NOT_EXISTS"));
     }
 
     public static List<Person> Find_all_persons() throws Exception {
@@ -78,7 +92,7 @@ public class Storage {
                 return new Person(Integer.valueOf(item[0]), item[1], item[2], item[3], item[4]);
             }
         }
-        throw new IllegalArgumentException("Вы пытаетесь найти несуществующего человека.");
+        throw new IllegalArgumentException(Storage.Find_at_glossary("EXCEPTION_PERSON_NOT_EXISTS"));
     }
 
     public static int Save(Person person) throws Exception {
@@ -112,7 +126,7 @@ public class Storage {
             }
             if (is_not_found) {
                 Fw.close();
-                throw new IllegalArgumentException("Вы пытаетесь поменять данные несуществующего человека.");
+                throw new IllegalArgumentException(Storage.Find_at_glossary("EXCEPTION_PERSON_NOT_EXISTS"));
             }
         }
         Fw.close();
@@ -128,7 +142,7 @@ public class Storage {
                 return item;
             }
         }
-        throw new IllegalArgumentException("Вы пытаетесь найти несуществующего клиента.");
+        throw new IllegalArgumentException(Storage.Find_at_glossary("EXCEPTION_CLIENT_NOT_EXISTS"));
     }
 
     public static List<Client> Find_all_clients() throws Exception {
@@ -147,7 +161,7 @@ public class Storage {
                 return new Client(Integer.valueOf(item[0]), Integer.valueOf(item[1]), Integer.valueOf(item[2]), formater.parse(item[3]));
             }
         }
-        throw new IllegalArgumentException("Вы пытаетесь найти несуществующего клиента.");
+        throw new IllegalArgumentException(Storage.Find_at_glossary("EXCEPTION_CLIENT_NOT_EXISTS"));
     }
 
     public static int Save(Client client) throws Exception {
@@ -181,7 +195,7 @@ public class Storage {
             }
             if (is_not_found) {
                 Fw.close();
-                throw new IllegalArgumentException("Вы пытаетесь поменять данные несуществующего клиента.");
+                throw new IllegalArgumentException(Storage.Find_at_glossary("EXCEPTION_CLIENT_NOT_EXISTS"));
             }
         }
         Fw.close();
@@ -195,7 +209,7 @@ public class Storage {
                 return new Bank(Integer.valueOf(item[0]), item[1]);
             }
         }
-        throw new IllegalArgumentException("Вы пытаетесь найти несуществующий банк.");
+        throw new IllegalArgumentException(Storage.Find_at_glossary("EXCEPTION_BANK_NOT_EXISTS"));
     }
 
     public static List<Bank> Find_all_banks() throws Exception {
@@ -214,7 +228,7 @@ public class Storage {
                 return new Bank(Integer.valueOf(item[0]), item[1]);
             }
         }
-        throw new IllegalArgumentException("Вы пытаетесь найти несуществующий банк.");
+        throw new IllegalArgumentException(Storage.Find_at_glossary("EXCEPTION_BANK_NOT_EXISTS"));
     }
 
     public static int Save(Bank bank) throws Exception {
@@ -248,7 +262,7 @@ public class Storage {
             }
             if (is_not_found) {
                 Fw.close();
-                throw new IllegalArgumentException("Вы пытаетесь поменять название у несуществующего банка.");
+                throw new IllegalArgumentException(Storage.Find_at_glossary("EXCEPTION_BANK_NOT_EXISTS"));
             }
         }
         Fw.close();
@@ -270,17 +284,35 @@ public class Storage {
         List<String[]> list = Read_file("Account");
         for (String[] item : list) {
             if (account_number.toString().equals(item[4])) {
-                return new Account(Integer.valueOf(item[0]), Integer.valueOf(item[1]), Integer.valueOf(item[2]), Integer.valueOf(item[3]), Integer.valueOf(item[4]), Double.valueOf(item[5]), formater.parse(item[6]), formater.parse(item[7]));
+                return new Account.AccountBuilder()
+                        .withAccountId(Integer.valueOf(item[0]))
+                        .withClientId(Integer.valueOf(item[1]))
+                        .withTariffId(Integer.valueOf(item[2]))
+                        .withAccountTypeId(Integer.valueOf(item[3]))
+                        .withAccountNumber(Integer.valueOf(item[4]))
+                        .withAccountAmount(Double.valueOf(item[5]))
+                        .withAccountStartDate(formater.parse(item[6]))
+                        .withAccountEndDate(formater.parse(item[7]))
+                        .build();
             }
         }
-        throw new IllegalArgumentException("Вы пытаетесь найти несуществующий счёт.");
+        throw new IllegalArgumentException(Storage.Find_at_glossary("EXCEPTION_ACCOUNT_NOT_EXISTS"));
     }
 
     public static List<Account> Find_all_accounts() throws Exception {
         List<String[]> list = Read_file("Account");
         List<Account> Account_list = new ArrayList<Account>();
         for (String[] item : list) {
-            Account_list.add(new Account(Integer.valueOf(item[0]), Integer.valueOf(item[1]), Integer.valueOf(item[2]), Integer.valueOf(item[3]), Integer.valueOf(item[4]), Double.valueOf(item[5]), formater.parse(item[6]), formater.parse(item[7])));
+            Account_list.add(new Account.AccountBuilder()
+                    .withAccountId(Integer.valueOf(item[0]))
+                    .withClientId(Integer.valueOf(item[1]))
+                    .withTariffId(Integer.valueOf(item[2]))
+                    .withAccountTypeId(Integer.valueOf(item[3]))
+                    .withAccountNumber(Integer.valueOf(item[4]))
+                    .withAccountAmount(Double.valueOf(item[5]))
+                    .withAccountStartDate(formater.parse(item[6]))
+                    .withAccountEndDate(formater.parse(item[7]))
+                    .build());
         }
         return Account_list;
     }
@@ -289,10 +321,19 @@ public class Storage {
         List<String[]> list = Read_file("Account");
         for (String[] item : list) {
             if (account_id.toString().equals(item[0])) {
-                return new Account(Integer.valueOf(item[0]), Integer.valueOf(item[1]), Integer.valueOf(item[2]), Integer.valueOf(item[3]), Integer.valueOf(item[4]), Double.valueOf(item[5]), formater.parse(item[6]), formater.parse(item[7]));
+                return new Account.AccountBuilder()
+                        .withAccountId(Integer.valueOf(item[0]))
+                        .withClientId(Integer.valueOf(item[1]))
+                        .withTariffId(Integer.valueOf(item[2]))
+                        .withAccountTypeId(Integer.valueOf(item[3]))
+                        .withAccountNumber(Integer.valueOf(item[4]))
+                        .withAccountAmount(Double.valueOf(item[5]))
+                        .withAccountStartDate(formater.parse(item[6]))
+                        .withAccountEndDate(formater.parse(item[7]))
+                        .build();
             }
         }
-        throw new IllegalArgumentException("Вы пытаетесь найти несуществующий счёт.");
+        throw new IllegalArgumentException(Storage.Find_at_glossary("EXCEPTION_ACCOUNT_NOT_EXISTS"));
     }
 
     public static int Save(Account account) throws Exception {
@@ -309,7 +350,16 @@ public class Storage {
                 Fw.append('\n');
             }
             account_id = max_id + 1;
-            Account_list.add(new Account(account_id, account.client_id, account.tariff_id, account.account_type_id, account.account_number, account.account_amount, account.account_start_date, account.account_end_date));
+            Account_list.add(new Account.AccountBuilder()
+                    .withAccountId(account_id)
+                    .withClientId(account.client_id)
+                    .withTariffId(account.tariff_id)
+                    .withAccountTypeId(account.account_type_id)
+                    .withAccountNumber(account.account_number)
+                    .withAccountAmount(account.account_amount)
+                    .withAccountStartDate(account.account_start_date)
+                    .withAccountEndDate(account.account_end_date)
+                    .build());
             Fw.write(account_id + ";" + account.client_id + ";" + account.tariff_id + ";" + account.account_type_id + ";" + account.account_number + ";" + account.account_amount + ";" + formater.format(account.account_start_date) + ";" + formater.format(account.account_end_date));
             Fw.append('\n');
         } else {
@@ -326,7 +376,7 @@ public class Storage {
             }
             if (is_not_found) {
                 Fw.close();
-                throw new IllegalArgumentException("Вы пытаетесь поменять данные несуществующего счёта.");
+                throw new IllegalArgumentException(Storage.Find_at_glossary("EXCEPTION_ACCOUNT_NOT_EXISTS"));
             }
         }
         Fw.close();
@@ -349,7 +399,7 @@ public class Storage {
                 return new Tariff(Integer.valueOf(item[0]), Integer.valueOf(item[1]), Integer.valueOf(item[2]), Double.valueOf(item[3]), Integer.valueOf(item[4]), Double.valueOf(item[5]));
             }
         }
-        throw new IllegalArgumentException("Вы пытаетесь найти несуществующий тариф.");
+        throw new IllegalArgumentException(Storage.Find_at_glossary("EXCEPTION_TARIFF_NOT_EXISTS"));
     }
 
     public static int Save(Tariff tariff) throws Exception {
@@ -383,7 +433,7 @@ public class Storage {
             }
             if (is_not_found) {
                 Fw.close();
-                throw new IllegalArgumentException("Вы пытаетесь поменять условия несуществующего тарифа.");
+                throw new IllegalArgumentException(Storage.Find_at_glossary("EXCEPTION_TARIFF_NOT_EXISTS"));
             }
         }
         Fw.close();
@@ -402,7 +452,7 @@ public class Storage {
                 }
             }
         }
-        throw new IllegalArgumentException("Вы пытаетесь найти несуществующий тип счёта.");
+        throw new IllegalArgumentException(Storage.Find_at_glossary("EXCEPTION_ACCOUNT_TYPE_NOT_EXISTS"));
     }
 
     public static List<String> Find_all_account_types() throws Exception {
@@ -421,7 +471,7 @@ public class Storage {
                 return new Transfer(Integer.valueOf(item[0]), Integer.valueOf(item[1]), item[2], Integer.valueOf(item[3]), Integer.valueOf(item[4]), Double.valueOf(item[5]), formater.parse(item[6]));
             }
         }
-        throw new IllegalArgumentException("Вы пытаетесь найти несуществующий трансфер.");
+        throw new IllegalArgumentException(Storage.Find_at_glossary("EXCEPTION_TRANSFER_NOT_EXISTS"));
     }
 
     public static List<Transfer> Find_all_transfers() throws Exception {
@@ -464,11 +514,21 @@ public class Storage {
             }
             if (is_not_found) {
                 Fw.close();
-                throw new IllegalArgumentException("Вы пытаетесь поменять данные несуществующего трансфера.");
+                throw new IllegalArgumentException(Storage.Find_at_glossary("EXCEPTION_TRANSFER_NOT_EXISTS"));
             }
         }
         Fw.close();
         return transfer_id;
+    }
+
+    public static String Find_at_glossary(String variable) throws Exception {
+        List<String[]> list = Read_file("Glossary");
+        for (String[] item : list) {
+            if (item[0].equals(variable)) {
+                return item[1];
+            }
+        }
+        return "Совпадение в словаре не найдено. В нём нет переменной: " + variable;
     }
 
 }
